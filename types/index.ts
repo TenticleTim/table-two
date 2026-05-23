@@ -113,3 +113,66 @@ export interface DinnerIdea {
   status: IdeaStatus;
   note: string | null;
 }
+
+// ─── Taste Profile ─────────────────────────────────────────────────────────
+
+export type PreferenceStrength = 'love' | 'like' | 'neutral' | 'dislike' | 'never';
+
+export interface IngredientPreference {
+  ingredient: string;
+  strength: PreferenceStrength;
+}
+
+export interface CuisinePreference {
+  cuisine: CuisineType;
+  strength: PreferenceStrength;
+}
+
+export interface UserTasteProfile {
+  userId: string;
+  proteins: IngredientPreference[];
+  vegetables: IngredientPreference[];
+  grains: IngredientPreference[];
+  dairy: IngredientPreference[];
+  sauces: IngredientPreference[];
+  cuisines: CuisinePreference[];
+  favoriteDishes: string[];
+  dislikedDishes: string[];
+  textureDislikes: string[];
+  spicePreference: 1 | 2 | 3 | 4 | 5;
+  dietaryRestrictions: string[];
+  allergies: string[];
+  budgetPreference: BudgetLevel;
+  cookingSkill: SkillLevel;
+  maxWeeknightCookTime: number;
+  mealPrepInterest: boolean;
+  healthGoals: HealthGoal[];
+}
+
+export interface HouseholdTasteProfile {
+  householdId: string;
+  members: string[];
+  sharedLikes: string[];
+  sharedDislikes: string[];
+  conflictIngredients: string[];
+  compromiseCuisines: CuisineType[];
+  favoriteSharedDishes: string[];
+  avoidedHouseholdFoods: string[];
+  budgetGoal: BudgetLevel;
+  weeklyCookingStyle: MealMode;
+}
+
+export interface RecipeRecommendationScore {
+  recipeId: string;
+  totalScore: number;
+  tasteScore: number;
+  budgetScore: number;
+  healthScore: number;
+  pantryScore: number;
+  timeScore: number;
+  skillScore: number;
+  coupleMatchScore: number;
+  reasons: string[];
+  warnings: string[];
+  matchLabel: 'perfect' | 'great' | 'good' | 'okay' | 'skip';
+}

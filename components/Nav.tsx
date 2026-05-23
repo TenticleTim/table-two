@@ -11,6 +11,8 @@ import {
   Settings,
   BarChart3,
   ChefHat,
+  Sparkles,
+  Users,
 } from 'lucide-react';
 import { users } from '@/data/users';
 
@@ -18,7 +20,9 @@ const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/today', label: 'Today', icon: CalendarDays },
   { href: '/weekly', label: 'Weekly', icon: CalendarDays },
+  { href: '/discover/for-you', label: 'For You ✦', icon: Sparkles },
   { href: '/discover', label: 'Discover', icon: Compass },
+  { href: '/couple/taste-match', label: 'Taste Match', icon: Users },
   { href: '/ideas', label: 'Ideas', icon: Heart },
   { href: '/shopping', label: 'Shopping', icon: ShoppingCart },
   { href: '/pantry', label: 'Pantry', icon: Package },
@@ -29,8 +33,8 @@ const navItems = [
 const mobileNavItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/today', label: 'Today', icon: CalendarDays },
+  { href: '/discover/for-you', label: 'For You', icon: Sparkles },
   { href: '/discover', label: 'Discover', icon: Compass },
-  { href: '/ideas', label: 'Ideas', icon: Heart },
   { href: '/shopping', label: 'Shop', icon: ShoppingCart },
 ];
 
@@ -53,7 +57,7 @@ export function Nav() {
 
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
           {navItems.map(({ href, label, icon: Icon }) => {
-            const isActive = pathname === href;
+            const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
             return (
               <Link
                 key={href}
@@ -93,7 +97,7 @@ export function Nav() {
       {/* Mobile bottom nav */}
       <nav className="lg:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-100 z-40 flex safe-area-pb">
         {mobileNavItems.map(({ href, label, icon: Icon }) => {
-          const isActive = pathname === href;
+          const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
           return (
             <Link
               key={href}

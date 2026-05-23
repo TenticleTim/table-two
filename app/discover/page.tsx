@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { Sparkles, Search, Users } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader';
 import { RecipeCard } from '@/components/RecipeCard';
 import { recipes } from '@/data/recipes';
@@ -12,6 +14,31 @@ export default function DiscoverPage() {
         title="Discover Recipes"
         subtitle={`${recipes.length} recipes across 10 cuisines`}
       />
+
+      {/* Taste intelligence shortcuts */}
+      <div className="mb-6 grid gap-3 sm:grid-cols-3">
+        <Link href="/discover/for-you" className="flex items-center gap-3 rounded-2xl bg-herb p-4 text-white hover:opacity-90 transition-opacity">
+          <Sparkles size={20} />
+          <div>
+            <p className="font-bold text-sm">For You ✦</p>
+            <p className="text-xs text-white/70">Personalised picks</p>
+          </div>
+        </Link>
+        <Link href="/discover/by-ingredient" className="flex items-center gap-3 rounded-2xl bg-white border border-gray-200 p-4 hover:bg-cream transition-colors">
+          <Search size={20} className="text-herb" />
+          <div>
+            <p className="font-bold text-sm text-ink">By ingredient</p>
+            <p className="text-xs text-gray-400">Search what you have</p>
+          </div>
+        </Link>
+        <Link href="/couple/taste-match" className="flex items-center gap-3 rounded-2xl bg-white border border-gray-200 p-4 hover:bg-cream transition-colors">
+          <Users size={20} className="text-herb" />
+          <div>
+            <p className="font-bold text-sm text-ink">Taste Match</p>
+            <p className="text-xs text-gray-400">Household compatibility</p>
+          </div>
+        </Link>
+      </div>
 
       {/* Mode filter pills */}
       <div className="mb-4">
