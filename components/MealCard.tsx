@@ -1,26 +1,84 @@
-import { Heart, ShoppingBasket, Sparkles } from 'lucide-react';
+import { Clock, Heart, ShoppingBasket, Sparkles } from 'lucide-react';
+import type { Recipe } from '@/types';
+import { modeColor, modeLabel } from '@/lib/utils';
+import { BudgetBadge } from '@/components/BudgetBadge';
+import { NutritionBar } from '@/components/NutritionBar';
 
-export function MealCard({ meal }: { meal: { title: string; mode: string; cuisine: string; time: string; cost: string; health: number; why: string } }) {
-  return (
-    <article className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-herb">{meal.mode} • {meal.cuisine}</p>
-          <h3 className="mt-2 text-xl font-bold text-ink">{meal.title}</h3>
+interface MealCardProps {
+  meal: Recipe;
+  compact?: boolean;
+}
+
+export function MealCard({ meal, compact = false }: MealCardProps) {
+  if (compact) {
+    return (
+      <article className="card flex items-center gap-4 p-4">
+        <div className="text-3xl">{meal.image}</div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-wide text-herb">{meal.cuisine}</p>
+          <h3 className="font-bold text-ink truncate">{meal.title}</h3>
+          <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
+            <span className="flex items-center gap-1"><Clock size={11} />{meal.time}</span>
+            <span>{meal.nutrition.calories} kcal</span>
+          </div>
         </div>
-        <div className="rounded-full bg-cream px-3 py-1 text-sm font-semibold">{meal.cost}</div>
+        <BudgetBadge cost={meal.cost} size="sm" />
+      </article>
+    );
+  }
+
+  return (
+    <article className="card p-5 flex flex-col">
+      <div className="mb-4 flex h-24 items-center justify-center rounded-2xl bg-cream text-5xl">
+        {meal.image}
       </div>
-      <p className="mt-3 text-sm leading-6 text-gray-600">{meal.why}</p>
-      <div className="mt-5 grid grid-cols-3 gap-2 text-center text-sm">
-        <div className="rounded-2xl bg-cream p-3"><b>{meal.time}</b><br />Time</div>
-        <div className="rounded-2xl bg-cream p-3"><b>{meal.health}</b><br />Health</div>
-        <div className="rounded-2xl bg-cream p-3"><b>82%</b><br />Pantry</div>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex flex-wrap gap-1.5 mb-2">
+            <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${modeColor(meal.mode)}`}>
+              {modeLabel(meal.mode)}
+            </span>
+            <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+              {meal.cuisine}
+            </span>
+          </div>
+          <h3 className="text-lg font-bold leading-snug text-ink">{meal.title}</h3>
+        </div>
+        <BudgetBadge cost={meal.cost} size="sm" />
       </div>
-      <div className="mt-5 flex gap-2">
-        <button className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-herb px-4 py-3 text-sm font-bold text-white"><Heart size={16}/> Share idea</button>
-        <button className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-ink px-4 py-3 text-sm font-bold text-white"><ShoppingBasket size={16}/> Add items</button>
+
+      <p className="mt-2 text-sm leading-relaxed text-gray-500 line-clamp-2">{meal.description}</p>
+
+      <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+        <div className="rounded-2xl bg-cream p-2.5">
+          <div className="font-bold text-ink">{meal.time}</div>
+          <div className="text-gray-500">Time</div>
+        </div>
+        <div className="rounded-2xl bg-cream p-2.5">
+          <div className="font-bold text-ink">{meal.health}</div>
+          <div className="text-gray-500">Health</div>
+        </div>
+        <div className="rounded-2xl bg-cream p-2.5">
+          <div className="font-bold text-ink">{meal.pantryMatch}%</div>
+          <div className="text-gray-500">Pantry</div>
+        </div>
       </div>
-      <button className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl border border-gray-200 px-4 py-3 text-sm font-bold"><Sparkles size={16}/> Make it cheaper / fancier / healthier</button>
+
+      <div className="mt-4">
+        <NutritionBar nutrition={meal.nutrition} health={meal.health} compact />
+      </div>
+
+      <div className="mt-4 flex gap-2">
+        <button className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl bg-herb px-3 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90">
+          <Heart size={14} /> Add to ideas
+        </button>
+        <button className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl bg-ink px-3 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90">
+          <ShoppingBasket size={14} /> Add to list
+        </button>
+      </div>
+      <button className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-2xl border border-gray-200 px-3 py-2.5 text-sm font-semibold text-gray-600 transition-colors hover:bg-cream">
+        <Sparkles size={14} /> Remix this meal
+      </button>
     </article>
   );
 }

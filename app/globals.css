@@ -1,6 +1,50 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
 
-:root { color-scheme: light; }
-body { background: #fff7ed; color: #1f2937; }
+@theme {
+  --color-cream: #fff7ed;
+  --color-ink: #1f2937;
+  --color-herb: #166534;
+  --color-tomato: #dc2626;
+  --color-sage: #4ade80;
+  --color-gold: #f59e0b;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --radius-4xl: 2rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-herb); border-radius: 999px; }
+
+@utility card {
+  border-radius: 1.5rem;
+  background-color: white;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  ring-width: 1px;
+  outline: 1px solid rgb(0 0 0 / 0.05);
+}
+
+@utility page-container {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 64rem;
+  padding: 2rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .page-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}

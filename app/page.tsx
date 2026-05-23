@@ -1,45 +1,119 @@
-import { ChefHat, Lock, Salad, WalletCards } from 'lucide-react';
+import Link from 'next/link';
+import { ChefHat, Zap, CalendarDays, ShoppingCart, TrendingDown } from 'lucide-react';
+import { ModeSelector } from '@/components/ModeSelector';
 import { MealCard } from '@/components/MealCard';
-import { dinnerIdeas, groceryList } from '@/lib/sample-data';
+import { VotingCard } from '@/components/VotingCard';
+import { recipes } from '@/data/recipes';
+import { pendingIdeas } from '@/data/ideas';
+import { currentWeekPlan } from '@/data/meal-plans';
+import { getRecipeById } from '@/data/recipes';
 
-export default function Home() {
+const todayDinner = getRecipeById('rec-027');
+const featuredRecipes = recipes.filter(r => r.mode === 'Balanced').slice(0, 3);
+
+export default function Dashboard() {
+  const today = currentWeekPlan.days[5];
+  const todayDinnerSlot = today?.meals.find(m => m.mealType === 'dinner');
+  const tonightRecipe = todayDinnerSlot ? getRecipeById(todayDinnerSlot.recipeId) : undefined;
+
   return (
-    <main className="min-h-screen px-4 py-8 sm:px-8">
-      <section className="mx-auto max-w-6xl">
-        <nav className="mb-10 flex items-center justify-between">
-          <div className="flex items-center gap-3"><div className="rounded-2xl bg-herb p-3 text-white"><ChefHat /></div><div><h1 className="text-2xl font-black">TableTwo</h1><p className="text-sm text-gray-600">Private meal planning for two</p></div></div>
-          <button className="rounded-full bg-white px-4 py-2 text-sm font-bold shadow-sm">Invite partner</button>
-        </nav>
+    <main className="page-container">
+      {/* Greeting */}
+      <div className="mb-8">
+        <p className="text-sm font-semibold text-herb">Saturday, May 23</p>
+        <h1 className="text-3xl font-black tracking-tight text-ink sm:text-4xl">
+          Good evening, Matt &amp; Sarah 👋
+        </h1>
+        <p className="mt-1 text-gray-500">You have a dinner plan for tonight and 3 shared ideas pending.</p>
+      </div>
 
-        <div className="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
-          <div className="rounded-[2rem] bg-ink p-8 text-white shadow-xl">
-            <p className="mb-3 inline-flex rounded-full bg-white/10 px-3 py-1 text-sm font-semibold">Replace meal kits. Eat better. Spend less.</p>
-            <h2 className="text-4xl font-black tracking-tight sm:text-6xl">Your private kitchen operating system.</h2>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-white/80">Plan breakfasts, lunches, dinners, meal prep, elaborate date-night meals, and budget-friendly weekly menus based on what both of you actually like.</p>
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-3xl bg-white/10 p-4"><Lock className="mb-3"/><b>Private couple space</b><p className="text-sm text-white/70">Invite-only household planning.</p></div>
-              <div className="rounded-3xl bg-white/10 p-4"><WalletCards className="mb-3"/><b>Budget modes</b><p className="text-sm text-white/70">Cheap, balanced, elaborate, prep.</p></div>
-              <div className="rounded-3xl bg-white/10 p-4"><Salad className="mb-3"/><b>Healthy balance</b><p className="text-sm text-white/70">Protein, veg, fiber, leftovers.</p></div>
-            </div>
+      {/* Cook Tonight Hero */}
+      <div className="mb-6 relative overflow-hidden rounded-4xl bg-ink px-8 py-8 text-white shadow-xl">
+        <div className="relative z-10">
+          <p className="mb-1 text-sm font-semibold text-white/60">Tonight's dinner</p>
+          <h2 className="text-2xl font-black sm:text-3xl">
+            {tonightRecipe?.image} {tonightRecipe?.title ?? 'Mushroom Risotto'}
+          </h2>
+          <p className="mt-1 text-white/70">{tonightRecipe?.time ?? '50 min'} • {tonightRecipe?.cuisine} • {tonightRecipe?.cost}</p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link
+              href="/today"
+              className="flex items-center gap-2 rounded-2xl bg-herb px-5 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90"
+            >
+              <ChefHat size={16} /> View today's plan
+            </Link>
+            <button className="flex items-center gap-2 rounded-2xl bg-white/10 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-white/20">
+              <Zap size={16} /> Cook Tonight
+            </button>
           </div>
-
-          <aside className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-black/5">
-            <h2 className="text-xl font-black">This week’s smart grocery list</h2>
-            <p className="mt-1 text-sm text-gray-600">Generated from shared dinner picks and pantry overlap.</p>
-            <ul className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
-              {groceryList.map((item) => <li key={item} className="rounded-2xl bg-cream px-4 py-3 text-sm font-semibold">{item}</li>)}
-            </ul>
-          </aside>
         </div>
+        <div className="absolute right-6 top-1/2 -translate-y-1/2 text-7xl opacity-20 select-none">
+          {tonightRecipe?.image ?? '🍄'}
+        </div>
+      </div>
 
-        <section className="mt-10">
-          <div className="mb-5 flex items-end justify-between gap-4">
-            <div><h2 className="text-3xl font-black">Dinner pitch cards</h2><p className="text-gray-600">Vote, save, remix, and convert meals into grocery lists.</p></div>
+      {/* Mode Selector */}
+      <section className="mb-8">
+        <h2 className="mb-3 text-lg font-bold text-ink">What are we cooking?</h2>
+        <ModeSelector />
+      </section>
+
+      {/* Quick stats */}
+      <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <Link href="/shopping" className="card p-4 hover:ring-herb transition-shadow">
+          <ShoppingCart size={20} className="mb-2 text-herb" />
+          <p className="text-2xl font-black text-ink">$97</p>
+          <p className="text-xs text-gray-500">Est. grocery cost</p>
+        </Link>
+        <Link href="/insights" className="card p-4 hover:ring-herb transition-shadow">
+          <TrendingDown size={20} className="mb-2 text-emerald-600" />
+          <p className="text-2xl font-black text-ink">$42</p>
+          <p className="text-xs text-gray-500">Saved vs meal kits</p>
+        </Link>
+        <Link href="/weekly" className="card p-4 hover:ring-herb transition-shadow">
+          <CalendarDays size={20} className="mb-2 text-sky-600" />
+          <p className="text-2xl font-black text-ink">7/7</p>
+          <p className="text-xs text-gray-500">Days planned</p>
+        </Link>
+        <Link href="/pantry" className="card p-4 hover:ring-herb transition-shadow">
+          <span className="mb-2 block text-xl">📦</span>
+          <p className="text-2xl font-black text-ink">30</p>
+          <p className="text-xs text-gray-500">Pantry items</p>
+        </Link>
+      </div>
+
+      {/* Shared ideas snapshot */}
+      {pendingIdeas.length > 0 && (
+        <section className="mb-8">
+          <div className="mb-4 flex items-end justify-between">
+            <div>
+              <h2 className="text-xl font-black text-ink">Pending dinner votes</h2>
+              <p className="text-sm text-gray-500">Both of you haven't voted on these yet.</p>
+            </div>
+            <Link href="/ideas" className="text-sm font-semibold text-herb">See all →</Link>
           </div>
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {dinnerIdeas.map((meal) => <MealCard key={meal.title} meal={meal} />)}
+          <div className="grid gap-4 sm:grid-cols-2">
+            {pendingIdeas.slice(0, 2).map(idea => (
+              <VotingCard key={idea.id} idea={idea} />
+            ))}
           </div>
         </section>
+      )}
+
+      {/* Discover section */}
+      <section>
+        <div className="mb-4 flex items-end justify-between">
+          <div>
+            <h2 className="text-xl font-black text-ink">Balanced picks for this week</h2>
+            <p className="text-sm text-gray-500">Healthy, practical, and achievable.</p>
+          </div>
+          <Link href="/discover" className="text-sm font-semibold text-herb">Browse all →</Link>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {featuredRecipes.map(recipe => (
+            <MealCard key={recipe.id} meal={recipe} />
+          ))}
+        </div>
       </section>
     </main>
   );
